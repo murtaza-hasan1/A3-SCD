@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend-deployment-episode-05
+  namespace: development
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: frontend-episode-05
+  template:
+    metadata:
+      labels:
+        app: frontend-episode-05
+    spec:
+      containers:
+      - name: frontend
+        image: murtazahasan/frontend-episode-05:latest
+        ports:
+        - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend-service-episode-05
+  namespace: development
+spec:
+  selector:
+    app: frontend-episode-05
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80

@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-deployment-episode-01
+  namespace: development
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend-episode-01
+  template:
+    metadata:
+      labels:
+        app: backend-episode-01
+    spec:
+      containers:
+      - name: backend
+        image: your_dockerhub_username/backend-episode-01:latest
+        ports:
+        - containerPort: 5000
+        env:
+        - name: MONGO_URL
+          value: "mongodb://localhost:27017/episode01db"
+      - name: mongo
+        image: mongo:latest
+        ports:
+        - containerPort: 27017
+        volumeMounts:
+        - name: mongo-persistent-storage
+          mountPath: /data/db
+      volumes:
+      - name: mongo-persistent-storage
+        persistentVolumeClaim:
+          claimName: database-pvc-episode-01
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend-service-episode-01
+  namespace: development
+spec:
+  selector:
+    app: backend-episode-01
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 5000
